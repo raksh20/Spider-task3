@@ -1,0 +1,96 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <title>Dashboard</title> 
+    <style>
+    	.thumbnail img{
+    		max-height: 150px;
+    		padding-left: 80px;
+    	}
+
+    	.thumbnail .description{
+    		color: #7f7f7f;
+    	}
+
+    	.price{
+    		font-weight: bold;
+    		font-size: 16px;
+    	}
+    </style>
+</head> 
+<body>
+	<header>
+		<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+  		<span class="navbar-brand mb-0 h1">SHOPPERS ZONE</span>
+  		<form action="/edit" method="POST">
+	  					<button type="submit" class="btn btn-primary">Edit items</button>
+					</form>
+		<a href="/buyerinfo">Items sold</a>
+  		<ul class="nav navbar-nav justify-content-end">
+ 
+      		<form action="/logout?_method=DELETE" method="POST">
+  				<button type="submit">Log Out</button>
+			</form>
+			<a href="/addproducts">Add Products</a>
+      	</ul>
+  		
+		</nav>
+	</header>
+	<h4>YOUR PRODUCTS</h4>
+	<div class="row">
+		
+		
+			<%
+        if(userData.length!=0){
+        var i=1;
+        userData.forEach(function(data){
+        %>
+        <div class="card col-sm-6 col-md-4" style="padding: 20px">
+  			<div class="thumbnail">
+  				<img src="<%= data.image %>"  class="img-responsive">
+  			</div>
+  			<div class="caption">
+
+    			<h6><%=data.itemname %></h6>
+    			<p class="description"><%=data.description %></p>
+    			<div class="clearfix">
+	    			<div class="price pull-left">
+	    				<b>&#8377 <%=data.price %></b>
+	    			</div>
+    		
+    			
+	    			
+    			</div><br>
+	    		
+    		</div>
+    	</div>
+    	<%  i++; }) %>
+	        	<% } else{ %>
+	        		<p> No items added</p>
+	        	<% } %>
+  	</div>
+</div>
+
+
+
+
+	</div>
+	
+	
+	<div>
+		
+	</div>
+
+	
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+</html>
