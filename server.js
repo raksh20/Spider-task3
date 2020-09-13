@@ -167,6 +167,16 @@ app.get('/addproducts', checkAuthenticated, (req, res) => {
 	res.render('addproducts')
 })
 
+app.get('/statistics', checkAuthenticated, (req, res) => {
+  var sql=`SELECT itemname, quantity FROM items`;
+  mysqlConnection.query(sql, function (err, data, fields) {
+      if (err) throw err;
+      console.log(data);
+      res.render('statistics', {userData: data});
+    });
+  //res.render('statistics')
+})
+
 app.get('/searchitem', checkAuthenticated, (req, res) => {
   
    res.render('searchitem');
@@ -211,17 +221,24 @@ app.get('/buyerinfo', checkAuthenticated, (req, res) => {
         info=JSON.parse(data[i].purchases);
         if(info[0].item.username==req.session.username){
           arr.push(JSON.parse(data[i].purchases));
-        }
+          res.render('buyerinfo', {userData: JSON.parse(data[i].purchases)});
+        }else{
+        res.render('buyerinfo',{userData:ar});
+
+       console.log("array"+arr);
+      }
+
 
     	 //arr.push(JSON.parse(data[i].purchases));
 
       }
-    	 console.log("array"+arr);
 
     	}
-    	res.render('buyerinfo', {userData: JSON.parse(data[0].purchases)});
+    	
   	});
-	//res.render('buyerinfo');
+  var ar=[];
+ 
+	
 
 });
 
@@ -230,10 +247,15 @@ app.get('/buyerpurchases', checkAuthenticated, (req, res) => {
 	mysqlConnection.query(sql, function (err, data, fields) {
     	if (err) throw err;
     	console.log(JSON.parse(data[0].purchases));
+      if(JSON.parse(data[0].purchases)==null){
+        res.render('buyerpurchases', {pdts:ar})
+      }else{
     	res.render('buyerpurchases', {pdts: JSON.parse(data[0].purchases)});
+    }
   	});
+  var ar=[];
 });
-
+var sellername=[];
 app.get('/cart/:id', (req, res,next) => {
 	var productId=req.params.id;
 	var cart=new Cart(req.session.cart?req.session.cart:{});
@@ -242,6 +264,18 @@ app.get('/cart/:id', (req, res,next) => {
     	if (err) throw err;
     	cart.add(data[0], data[0].id);
     	req.session.cart=cart;
+      var newqty=(data[0].quantity)-1;
+      var sql1=`UPDATE items SET quantity='${newqty}' WHERE id=${productId}`;
+      mysqlConnection.query(sql1, function (err, data) {
+      if (err) throw err;
+      });
+      //var arr=[];
+      sellername.push(data[0].username)
+      var sql2=`UPDATE usersinfo SET sellername='${JSON.stringify(sellername)}' WHERE username='${req.session.username}'`;
+      mysqlConnection.query(sql2, function (err, data) {
+      if (err) throw err;
+      });
+
 
     	console.log(req.session.cart)
     	res.redirect('/buyerhome')
@@ -253,15 +287,42 @@ app.get('/cart/:id', (req, res,next) => {
 
 app.get('/checkout', (req,res)=>{
 	var cart= new Cart(req.session.cart);
-	console.log(cart.generateArray());
-	var pdts=JSON.stringify(cart.generateArray());
+	var items=cart.generateArray();
+  console.log(items.length);
+  /*for(var i=0;i<=items.length;i++){
+    items[i].item.quantity-=1
+  }*/
+	/*var pdts=JSON.stringify(cart.generateArray());
 	console.log(pdts);
 	var sql=`UPDATE usersinfo SET purchases='${pdts}' WHERE username='${req.session.username}'`;
 	 mysqlConnection.query(sql, function (err, result) {
     if (err) throw err;
 
-    });
+    });*/
 	req.session.cart=null;
+
+  var arr=[];
+  var sql1=`SELECT purchases FROM usersinfo WHERE username='${req.session.username}'`;
+   mysqlConnection.query(sql1, function (err, data) {
+    if (err) throw err;
+    var items=JSON.parse(data[0].purchases);
+    if(items==null){
+      res.redirect('checkout');
+    }else{
+            for(var i=0;i<items.length;i++){
+              arr.push(items[i]);
+            }
+            console.log(arr);
+            console.log(JSON.stringify(arr))
+            var sql2=`UPDATE usersinfo SET purchases='${JSON.stringify(arr)}' WHERE username='${req.session.username}'`;
+            mysqlConnection.query(sql2, function (err, data) {
+            if (err) throw err;
+            });
+          }
+
+
+
+    });
 	res.render('checkout');
 })
 

@@ -7,30 +7,14 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
-    <title>Sold items</title> 
-    <style>
-    	.thumbnail img{
-    		max-height: 150px;
-    		padding-left: 80px;
-    	}
-
-    	.thumbnail .description{
-    		color: #7f7f7f;
-    	}
-
-    	.price{
-    		font-weight: bold;
-    		font-size: 16px;
-    	}
-    </style>
+    <title>Edit</title> 
 </head> 
 <body>
 	<header>
 		<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
   		<span class="navbar-brand mb-0 h1">SHOPPERS ZONE</span>
   		<ul class="nav navbar-nav">
-  			<a href="/sellerhome">HOME</a>
-      		
+      		<li class="nav-link active nav-item "><a class="nav-link" href="/sellerhome">HOME</a></li>
       		<form action="/logout?_method=DELETE" method="POST">
   				<button type="submit">Log Out</button>
 			</form>
@@ -38,47 +22,46 @@
   		
 		</nav>
 	</header>
-	
-	<h4>ITEMS SOLD</h4>
-					<div class="row">
-						<%
-				        if(userData.length!=0){
-				        var i=1;
-				        userData.forEach(function(data){
-				        %>
-		
-						<div class="card col-sm-6 col-md-4" style="padding: 20px">
+  <h4>STATISTICS</h4>
+  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+  
 
-							
-				        <div class="thumbnail">
-				        	<img src="<%= data.item.image %>" class="img-responsive">
-				        </div>
-				        <div class="caption">
-				  			
-				    		
-				    		<h6><%=data.item.itemname %></h6>
-    						<p class="description"><%=data.item.description %></p>
-    						<div class="clearfix">
-	    						<div class="price pull-left">
-	    							<b>&#8377 <%=data.price %></b>
-	    						</div>
-				    		
-				    			
-					    			
-					  			
-									
-				    		</div>
-					    		
-				    		</div>
-    					</div>
-    					<%  i++; }) %>
-					        	<% } else{ %>
-					        		<p> No items available</p>
-					        	<% } %>
-  					</div>
-	
-	
+	 <script type="text/javascript">
 
+    var data = "<%= userData %>";
+    var arr=[];
+    console.log(data);
+   
+             
+   for(var i=0; i<data.length;i++) {
+    arr.push({"label":data[i].itemname, "y":data[i].quantity});
+}
+
+                var chart = new CanvasJS.Chart("chartContainer", {
+
+      title:{
+        text: "Products sold"              
+      },
+      data: [             
+        { 
+
+         type: "bar",
+         dataPoints: arr
+         
+         
+       }
+       ]
+     });
+
+    chart.render();
+                    
+
+    
+    
+    
+  
+  </script>
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>

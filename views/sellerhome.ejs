@@ -32,6 +32,7 @@
 	  					<button type="submit" class="btn btn-primary">Edit items</button>
 					</form>
 		<a href="/buyerinfo">Items sold</a>
+		<a href="/statistics">STATISTICS</a>
   		<ul class="nav navbar-nav justify-content-end">
  
       		<form action="/logout?_method=DELETE" method="POST">
@@ -59,6 +60,7 @@
 
     			<h6><%=data.itemname %></h6>
     			<p class="description"><%=data.description %></p>
+    			<p>Quantity: <%=data.quantity %></p>
     			<div class="clearfix">
 	    			<div class="price pull-left">
 	    				<b>&#8377 <%=data.price %></b>
